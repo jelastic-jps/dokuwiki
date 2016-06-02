@@ -1,7 +1,6 @@
 # Jelastic DokuWiki Add-on
 
 This repository provides [DokuWiki](http://www.dokuwiki.org/) add-on for Jelastic Platform.
-[![GET IT HOSTED](https://raw.githubusercontent.com/JelasticJPS/DokuWiki/master/images/getithosted.png)](http://go.jelastic.com/test?hoster-select=1&theme=modern&app=https://raw.githubusercontent.com/JelasticJPS/DokuWiki/master/DokuWiki-4.7.7.json)
 
 **DokuWiki** is a simple to use and highly versatile Open Source wiki software that doesn't require a database.
 
