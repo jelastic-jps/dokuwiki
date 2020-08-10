@@ -1,121 +1,36 @@
-{
-  "jpsType": "install",
-  "jpsVersion": "0.2",
-  "name": "DokuWiki",
-  "version": "4.7.7",
-  "type": "php",
-  "homepage": "http://www.dokuwiki.org/",
-  "categories": [
-    "apps/content-management"
-  ],
-  "logo": "https://download.jelastic.com/public.php?service=files&t=8363ae80a08b6ec6f3e2e2d90b057b4a&download",
-  "description": {
-    "en": "DokuWiki is a simple to use and highly versatile Open Source wiki software that doesn't require a database. It is loved by users for its clean and readable syntax. The ease of maintenance, backup and integration makes it an administrator's favorite",
-    "ru": "DokuWiki - это простое и в то же время достаточно мощное открытое программное обеспечение , которое не требует использования базы данных, которое пользуется популярностью благодаря своему синтаксу. Администраторы выбирают DokuWiki за его простое управление, резервное копирование и интеграцию."
-  },
-  "env": {
-    "topology": {
-      "engine": "php5.5",
-      "nodes": [
-        {
-          "extip": false,
-          "count": 1,
-          "cloudlets": 8,
-          "nodeType": "apache2"
-        },
-        {
-          "extip": false,
-          "count": 1,
-          "cloudlets": 8,
-          "nodeType": "mysql5"
-        }
-      ],
-      "ssl": false,
-      "ha": false
-    },
-    "deployments": [
-      {
-        "name": "dokuwiki.zip",
-        "context": "ROOT",
-        "archive": "https://download.jelastic.com/public.php?service=files&t=de37298f61c4558cd0f196dfc5556677&download"
-      }
-    ],
-    "configs": [
-      {
-        "nodeType": "apache2",
-        "path": "${SERVER_WEBROOT}/ROOT/conf/users.auth.php",
-        "replacements": [
-          {
-            "pattern": "{USER_EMAIL}",
-            "replacement": "${user.email}"
-          }
-        ]
-      },
-      {
-        "nodeType": "apache2",
-        "path": "${SERVER_WEBROOT}/ROOT/conf/local.php",
-        "replacements": [
-          {
-            "pattern": "{DB_HOST}",
-            "replacement": "${nodes.mysql5.address}"
-          },
-          {
-            "pattern": "{DB_USER}",
-            "replacement": "${nodes.mysql5.database.user}"
-          },
-          {
-            "pattern": "{DB_PASSWORD}",
-            "replacement": "${nodes.mysql5.database.password}"
-          },
-          {
-            "pattern": "{DB_NAME}",
-            "replacement": "${nodes.mysql5.database.name}"
-          }
-        ]
-      },
-      {
-        "nodeType": "apache2",
-        "path": "${SERVER_WEBROOT}/ROOT/conf/mysql.conf.php",
-        "replacements": [
-          {
-            "pattern": "{DB_HOST}",
-            "replacement": "${nodes.mysql5.address}"
-          },
-          {
-            "pattern": "{DB_USER}",
-            "replacement": "${nodes.mysql5.database.user}"
-          },
-          {
-            "pattern": "{DB_PASSWORD}",
-            "replacement": "${nodes.mysql5.database.password}"
-          },
-          {
-            "pattern": "{DB_NAME}",
-            "replacement": "${nodes.mysql5.database.name}"
-          }
-        ]
-      },
-      {
-        "restart": true,
-        "path": "/etc/php.ini",
-        "nodeType": "apache2",
-        "replacements": [
-          {
-            "pattern": ".*extension=mysql.so",
-            "replacement": "extension=mysql.so"
-          }
-        ]
-      },
-      {
-        "nodeType": "mysql5",
-        "database": {
-          "name": "dokuwiki",
-          "user": "dokuwiki",
-          "dump": "https://download.jelastic.com/public.php?service=files&t=45345b30029d0d33d18d8d863813dfa6&download",
-          "patch": "UPDATE dokuwiki.users SET pass=MD5('${user.appPassword}') WHERE login='admin';"
-        }
-      }
-    ]
-  },
-  "success": "Below you will find your admin panel link, username and password.</br></br> <table style='font-size:13px; border: none;'><tr><td>Admin panel URL:</td><td style='padding-left: 10px;'><a href='${env.protocol}://${env.domain}/' target='_blank'>${env.protocol}://${env.domain}/</a></td></tr>  <tr><td>Admin name:</td><td style='padding-left: 10px;'>admin</td></tr><tr><td>Password:</td><td style='padding-left: 10px;'>${user.appPassword}</td></tr></table></br>To add custom domain name for your DokuWiki installation follow the steps described in our <a href='http://docs.jelastic.com/custom-domains' target='_blank'>documentation</a>"
-}
+type: install
+version: '0.2'
+id: dokuwiki
+name: DokuWiki
+homepage: http://www.dokuwiki.org/
+categories:
+- apps/content-management
+logo: https://download.jelastic.com/public.php?service=files&t=8363ae80a08b6ec6f3e2e2d90b057b4a&download
+description: DokuWiki is a simple to use and highly versatile Open Source wiki software
+  that doesn't require a database. It is loved by users for its clean and readable
+  syntax. The ease of maintenance, backup and integration makes it an administrator's
+  favorite
+nodes:
+  cloudlets: 8
+  nodeType: apache2
+onInstall:
+- deploy:
+    name: dokuwiki.zip
+    context: ROOT
+    archive: https://download.jelastic.com/public.php?service=files&t=ed3f0f87d963b5326bf62748c937f274&download
+- replaceInFile:
+    nodeType: apache2
+    path: "/var/www/webroot/ROOT/conf/users.auth.php"
+    replacements:
+    - pattern: "{USER_EMAIL}"
+      replacement: "${user.email}"
+- cmd[cp]: sed -i "s|{DATE}}|`$(echo date)`|g" /var/www/webroot/ROOT/conf/acl.auth.php
+success: |
+  Below you will find your admin panel link, username and password.  
+  
+  Admin panel URL: [${env.protocol}://${env.domain}/](${env.protocol}://${env.domain}/)  
+  Admin name: admin  
+  Password: password  
+  
+  To add custom domain name for your DokuWiki
+  installation follow the steps described in our [documentation](http://docs.jelastic.com/custom-domains)
