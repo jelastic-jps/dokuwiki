@@ -35,7 +35,7 @@ onInstall:
     echo "\$conf['superuser'] = '${globals.superuser}';" >> ${globals.config}
     echo "\$conf['disableactions'] = 'register';" >> ${globals.config}
     PASSWORD_HASH=$(php -r "echo password_hash('${globals.password}', PASSWORD_DEFAULT);")
-    echo '${globals.superuser}:$PASSWORD_HASH:Admin:${user.email}:admin' >> /var/www/webroot/ROOT/conf/users.auth.php
+    echo "${globals.superuser}:$PASSWORD_HASH:Admin:${user.email}:admin" >> /var/www/webroot/ROOT/conf/users.auth.php
     echo "*   @ALL    1" >> /var/www/webroot/ROOT/conf/acl.auth.php
     echo "*   @${globals.superuser}    16" >> /var/www/webroot/ROOT/conf/acl.auth.php
 
