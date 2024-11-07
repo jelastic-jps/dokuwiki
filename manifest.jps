@@ -16,7 +16,7 @@ globals:
   config: /var/www/webroot/ROOT/conf/local.php
   title: "My DokuWiki"
   superuser: admin
-  password: fn.password(8)
+  password: ${fn.password}
 
 nodes:
   cloudlets: 8
