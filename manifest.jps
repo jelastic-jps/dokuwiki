@@ -18,6 +18,9 @@ globals:
   superuser: admin
   password: ${fn.password}
 
+ssl: true
+skipNodeEmails: true
+
 nodes:
   cloudlets: 8
   nodeType: apache2
